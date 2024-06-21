@@ -1,3 +1,3 @@
 
-pub usingnamespace @import("bytes.zig");
+pub const bytes = @import("bytes.zig");
 

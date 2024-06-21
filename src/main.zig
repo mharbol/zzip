@@ -1,11 +1,11 @@
 const std = @import("std");
-const util = @import("util");
 const rle = @import("rle");
+const util = @import("util");
 
 pub fn main() !void {
-    std.debug.print("{any}\n", .{util.bigEndU16(0x10ff)});
-    std.debug.print("{any}\n", .{util.bigEndU32(0x10ff)});
-    std.debug.print("{any}\n", .{util.bigEndU64(0x10ff)});
+    std.debug.print("{any}\n", .{util.bytes.bigEndU16(0x10ff)});
+    std.debug.print("{any}\n", .{util.bytes.bigEndU32(0x10ff)});
+    std.debug.print("{any}\n", .{util.bytes.bigEndU64(0x10ff)});
 
     var arr = [_]u8{ 1, 2, 3 };
     for (&arr) |*val| {
@@ -21,4 +21,5 @@ pub fn main() !void {
         std.debug.print("{} ", .{i});
     }
     std.debug.print("\n", .{});
+    _ = rle.rlePass(arr[0..]);
 }

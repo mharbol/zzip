@@ -17,6 +17,7 @@ pub fn bigEndU64(number: u64) [8]u8 {
         shiftMask(number, 3), shiftMask(number, 2), shiftMask(number, 1), shiftMask(number, 0) };
 }
 
+// Simple unit tests.
 test "Test u16" {
     try testing.expectEqualSlices(u8, &[_]u8{ 0x10, 0xff }, &bigEndU16(0x10ff));
     try testing.expectEqualSlices(u8, &[_]u8{ 0, 0 }, &bigEndU16(0));
