@@ -19,10 +19,19 @@ pub fn build(b: *std.Build) void {
     });
     b.installArtifact(lib_rle);
 
-    const mod_rle = b.addModule("rle", .{
-        .root_source_file = b.path("src/rle/rle.zig")
-    });
+    const mod_rle = b.addModule("rle", .{ .root_source_file = b.path("src/rle/rle.zig") });
     exe.root_module.addImport("rle", mod_rle);
+
+    const lib_file = b.addStaticLibrary(.{
+        .name = "rle",
+        .root_source_file = b.path("src/file/file.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+    b.installArtifact(lib_file);
+
+    const mod_file = b.addModule("file", .{ .root_source_file = b.path("src/file/file.zig") });
+    exe.root_module.addImport("file", mod_file);
 
     const lib_util = b.addStaticLibrary(.{
         .name = "util",
@@ -32,9 +41,7 @@ pub fn build(b: *std.Build) void {
     });
     b.installArtifact(lib_util);
 
-    const mod_util = b.addModule("util", .{
-        .root_source_file = b.path("src/util/util.zig")
-    });
+    const mod_util = b.addModule("util", .{ .root_source_file = b.path("src/util/util.zig") });
     exe.root_module.addImport("util", mod_util);
 
     const run_cmd = b.addRunArtifact(exe);
