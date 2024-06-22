@@ -3,7 +3,7 @@ const std = @import("std");
 /// Returns the (non-standard) run length encoded version of the `data_in` slice.
 /// For simplicity in looping, the encoding goes value then count.
 /// Ex: {1, 1, 1} -> {3, 1}
-/// Caller must free output slice.
+/// Caller must deinit output ArrayList
 pub fn encodeSlice(allocator: std.mem.Allocator, data_in: []const u8) !std.ArrayList(u8) {
     var rle_arr = std.ArrayList(u8).init(allocator);
     errdefer rle_arr.deinit();
@@ -39,7 +39,7 @@ pub fn encodeSlice(allocator: std.mem.Allocator, data_in: []const u8) !std.Array
 }
 
 /// Returns decoded version of `data_in` slice.
-/// Caller must free output slice.
+/// Caller must deinit output ArrayList
 pub fn decodeSlice(allocator: std.mem.Allocator, data_in: []const u8) !std.ArrayList(u8) {
     var arr_out = std.ArrayList(u8).init(allocator);
     errdefer arr_out.deinit();
