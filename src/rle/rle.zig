@@ -37,3 +37,27 @@ pub fn encodeSlice(allocator: std.mem.Allocator, data_in: []const u8) !std.Array
 
     return rle_arr;
 }
+
+/// Returns decoded version of `data_in` slice.
+/// Caller must free output slice.
+pub fn decodeSlice(allocator: std.mem.Allocator, data_in: []const u8) !std.ArrayList(u8) {
+    var arr_out = std.ArrayList(u8).init(allocator);
+    errdefer arr_out.deinit();
+    if (0 == data_in.len) {
+        return arr_out;
+    }
+    std.debug.assert(0 == data_in.len % 2);
+
+    var entry_val: u8 = 0;
+
+    for (data_in, 0..) |value, idx| {
+        if (0 == idx % 2) {
+            entry_val = value;
+        } else {
+            for (0..value) |_| {
+                try arr_out.append(entry_val);
+            }
+        }
+    }
+    return arr_out;
+}
