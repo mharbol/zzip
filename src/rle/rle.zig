@@ -4,7 +4,7 @@ const std = @import("std");
 /// For simplicity in looping, the encoding goes value then count.
 /// Ex: {1, 1, 1} -> {3, 1}
 /// Caller must free output slice.
-pub fn rleEncodeSlice(allocator: std.mem.Allocator, data_in: []const u8) !std.ArrayList(u8) {
+pub fn encodeSlice(allocator: std.mem.Allocator, data_in: []const u8) !std.ArrayList(u8) {
     var rle_arr = std.ArrayList(u8).init(allocator);
     errdefer rle_arr.deinit();
 
