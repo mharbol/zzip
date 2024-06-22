@@ -21,5 +21,4 @@ pub fn main() !void {
         std.debug.print("{} ", .{i});
     }
     std.debug.print("\n", .{});
-    _ = rle.rlePass(arr[0..]);
 }
