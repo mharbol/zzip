@@ -25,6 +25,24 @@ pub const HuffmanTreeNode = struct {
         allocator.destroy(self);
     }
 
+    /// Combines two HuffmanTreeNodes as part of constructing the overall tree.
+    pub fn combine(allocator: std.mem.Allocator, node0: *HuffmanTreeNode, node1: *HuffmanTreeNode) !*HuffmanTreeNode {
+        // new node's byte is set to the lower of the two
+        // the byte will be unique for each because each individual node at the start was made off of a unique byte
+        var node_out = try HuffmanTreeNode.init(allocator, if (node0.byte < node1.byte) node0.byte else node1.byte, node0.count + node1.count);
+        // left node is the lesser of the two as determined by compareTo().
+        if (node0.compareTo(node1) < 0) {
+            node_out.setLeft(node0);
+            node_out.setRight(node1);
+        } else {
+            node_out.setLeft(node1);
+            node_out.setRight(node0);
+        }
+        return node_out;
+    }
+
+    /// Compares only individual nodes for the sake of a priority queue and insertion.
+    /// NOT for comparing whole trees
     pub fn compareTo(self: *HuffmanTreeNode, other: *HuffmanTreeNode) i32 {
         var diff: i32 = @intCast(self.count);
         diff -= @intCast(other.count);
@@ -35,19 +53,31 @@ pub const HuffmanTreeNode = struct {
         return diff;
     }
 
-    pub fn isLeafNode(self: *HuffmanTreeNode) bool {
+    pub inline fn isLeafNode(self: *HuffmanTreeNode) bool {
         return null == self.left and null == self.right;
     }
 
-    pub fn getByte(self: *HuffmanTreeNode) u8 {
+    pub inline fn getByte(self: *HuffmanTreeNode) u8 {
         return self.byte;
     }
 
-    pub fn setLeft(self: *HuffmanTreeNode, left: *HuffmanTreeNode) void {
+    pub inline fn getCount(self: *HuffmanTreeNode) u32 {
+        return self.count;
+    }
+
+    pub inline fn setLeft(self: *HuffmanTreeNode, left: *HuffmanTreeNode) void {
         self.left = left;
     }
 
-    pub fn setRight(self: *HuffmanTreeNode, right: *HuffmanTreeNode) void {
+    pub inline fn setRight(self: *HuffmanTreeNode, right: *HuffmanTreeNode) void {
         self.right = right;
+    }
+
+    pub inline fn getLeft(self: *HuffmanTreeNode) ?*HuffmanTreeNode {
+        return self.left;
+    }
+
+    pub inline fn getRight(self: *HuffmanTreeNode) ?*HuffmanTreeNode {
+        return self.right;
     }
 };

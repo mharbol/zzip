@@ -22,3 +22,33 @@ test "Test compareTo()" {
     try std.testing.expect(tree0.compareTo(tree1) == -4);
     try std.testing.expect(tree2.compareTo(tree3) == 5);
 }
+
+test "Test Combine two Leaves" {
+    const node0 = try huffman.HuffmanTreeNode.init(allocator, 0, 4);
+    const node1 = try huffman.HuffmanTreeNode.init(allocator, 1, 1);
+    const combined = try huffman.HuffmanTreeNode.combine(allocator, node0, node1);
+    defer {
+        combined.deinit(allocator);
+    }
+    try std.testing.expect(combined.getByte() == 0);
+    try std.testing.expect(combined.getCount() == 5);
+    try std.testing.expect(combined.getLeft().?.getByte() == 1);
+    try std.testing.expect(combined.getLeft().?.getCount() == 1);
+    try std.testing.expect(combined.getRight().?.getByte() == 0);
+    try std.testing.expect(combined.getRight().?.getCount() == 4);
+}
+
+test "Test Combine two Leaves with Same Count" {
+    const node0 = try huffman.HuffmanTreeNode.init(allocator, 12, 50);
+    const node1 = try huffman.HuffmanTreeNode.init(allocator, 34, 50);
+    const combined = try huffman.HuffmanTreeNode.combine(allocator, node0, node1);
+    defer {
+        combined.deinit(allocator);
+    }
+    try std.testing.expect(combined.getByte() == 12);
+    try std.testing.expect(combined.getCount() == 100);
+    try std.testing.expect(combined.getLeft().?.getByte() == 12);
+    try std.testing.expect(combined.getLeft().?.getCount() == 50);
+    try std.testing.expect(combined.getRight().?.getByte() == 34);
+    try std.testing.expect(combined.getRight().?.getCount() == 50);
+}
