@@ -1,5 +1,6 @@
 const huffman = @import("huffman.zig");
 const std = @import("std");
+const queue = @import("priority_queue.zig");
 const allocator = std.testing.allocator;
 
 test "Test init Huff Tree" {
@@ -94,4 +95,28 @@ test "Test simple count bytes" {
     try std.testing.expect(data_out['D'] == 10);
     try std.testing.expect(data_out['A'] == 11);
     try std.testing.expect(data_out['R'] == 0);
+}
+
+test "Test Priority Queue Functionality" {
+    const node0 = try huffman.HuffmanTreeNode.init(allocator, 'A', 12);
+    const node1 = try huffman.HuffmanTreeNode.init(allocator, 'B', 12);
+    const node2 = try huffman.HuffmanTreeNode.init(allocator, 'C', 24);
+    const node3 = try huffman.HuffmanTreeNode.init(allocator, 'D', 3);
+    const node4 = try huffman.HuffmanTreeNode.init(allocator, 'F', 323);
+    var pqueue = queue.NodePriorityQueue.init(allocator);
+
+    defer {
+        node0.deinit(allocator);
+        node1.deinit(allocator);
+        node2.deinit(allocator);
+        node3.deinit(allocator);
+        node4.deinit(allocator);
+        pqueue.deinit();
+    }
+
+    try pqueue.push(node4);
+    try pqueue.push(node3);
+    try pqueue.push(node2);
+    try pqueue.push(node1);
+    try pqueue.push(node0);
 }
