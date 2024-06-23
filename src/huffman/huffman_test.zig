@@ -56,7 +56,7 @@ test "Test Combine with 3" {
     const node_b = try huffman.HuffmanTreeNode.init(allocator, 'B', 6);
     const node_e = try huffman.HuffmanTreeNode.init(allocator, 'E', 7);
     const node_cb = try huffman.HuffmanTreeNode.combine(allocator, node_c, node_b);
-    var node_cbe = try huffman.HuffmanTreeNode.combine(allocator, node_e, node_cb);
+    const node_cbe = try huffman.HuffmanTreeNode.combine(allocator, node_e, node_cb);
     defer node_cbe.deinit(allocator);
 
     // root
@@ -83,4 +83,15 @@ test "Test Combine with 3" {
     try std.testing.expect(node_cbe.getRight().?.getRight().?.isLeafNode());
     try std.testing.expect(node_cbe.getRight().?.getRight().?.getByte() == 'B');
     try std.testing.expect(node_cbe.getRight().?.getRight().?.getCount() == 6);
+}
+
+test "Test simple count bytes" {
+    const data_out = huffman.countBytes("A_DEAD_DAD_CEDED_A_BAD_BABE_A_BEADED_ABACA_BED");
+    try std.testing.expect(data_out['C'] == 2);
+    try std.testing.expect(data_out['B'] == 6);
+    try std.testing.expect(data_out['E'] == 7);
+    try std.testing.expect(data_out['_'] == 10);
+    try std.testing.expect(data_out['D'] == 10);
+    try std.testing.expect(data_out['A'] == 11);
+    try std.testing.expect(data_out['R'] == 0);
 }

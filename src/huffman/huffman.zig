@@ -81,3 +81,11 @@ pub const HuffmanTreeNode = struct {
         return self.right;
     }
 };
+
+pub fn countBytes(data_in: []const u8) [0xff]u32 {
+    var bytes_count = [_]u32{0} ** 0xff;
+    for (data_in) |value| {
+        bytes_count[value] += 1;
+    }
+    return bytes_count;
+}
