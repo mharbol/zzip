@@ -102,7 +102,7 @@ test "Test Priority Queue Functionality" {
     const node1 = try huffman.HuffmanTreeNode.init(allocator, 'B', 12);
     const node2 = try huffman.HuffmanTreeNode.init(allocator, 'C', 24);
     const node3 = try huffman.HuffmanTreeNode.init(allocator, 'D', 3);
-    const node4 = try huffman.HuffmanTreeNode.init(allocator, 'F', 323);
+    const node4 = try huffman.HuffmanTreeNode.init(allocator, 'E', 323);
     var pqueue = queue.NodePriorityQueue.init(allocator);
 
     defer {
@@ -119,4 +119,16 @@ test "Test Priority Queue Functionality" {
     try pqueue.push(node2);
     try pqueue.push(node1);
     try pqueue.push(node0);
+
+    var next = pqueue.pop();
+    try std.testing.expect(next.getByte() == 'D');
+    next = pqueue.pop();
+    try std.testing.expect(next.getByte() == 'A');
+    next = pqueue.pop();
+    try std.testing.expect(next.getByte() == 'B');
+    next = pqueue.pop();
+    try std.testing.expect(next.getByte() == 'C');
+    next = pqueue.pop();
+    try std.testing.expect(next.getByte() == 'E');
+    try std.testing.expect(pqueue.len() == 0);
 }
