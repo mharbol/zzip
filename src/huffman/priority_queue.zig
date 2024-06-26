@@ -52,7 +52,7 @@ pub const NodePriorityQueue = struct {
             smallestIdx = leftIdx;
         }
         if (rightIdx < sz and self.heap.items[rightIdx].compareTo(self.heap.items[smallestIdx]) < 0) {
-            smallestIdx = smallestIdx;
+            smallestIdx = rightIdx;
         }
 
         if (smallestIdx != idx) {
