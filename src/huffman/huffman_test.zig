@@ -1,5 +1,5 @@
-const huffman = @import("huffman.zig");
 const std = @import("std");
+const huffman = @import("huffman.zig");
 const queue = @import("priority_queue.zig");
 const allocator = std.testing.allocator;
 
