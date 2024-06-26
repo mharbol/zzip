@@ -5,9 +5,11 @@ pub const HuffmanTreeNode = struct {
     right: ?*HuffmanTreeNode,
     count: u32,
     byte: u8,
+    allocator: std.mem.Allocator,
 
     pub fn init(allocator: std.mem.Allocator, byte: u8, count: u32) !*HuffmanTreeNode {
         const huff_tree = try allocator.create(HuffmanTreeNode);
+        huff_tree.allocator = allocator;
         huff_tree.byte = byte;
         huff_tree.count = count;
         huff_tree.left = null;
@@ -15,14 +17,14 @@ pub const HuffmanTreeNode = struct {
         return huff_tree;
     }
 
-    pub fn deinit(self: *HuffmanTreeNode, allocator: std.mem.Allocator) void {
+    pub fn deinit(self: *HuffmanTreeNode) void {
         if (self.left) |left| {
-            left.deinit(allocator);
+            left.deinit();
         }
         if (self.right) |right| {
-            right.deinit(allocator);
+            right.deinit();
         }
-        allocator.destroy(self);
+        self.allocator.destroy(self);
     }
 
     /// Combines two HuffmanTreeNodes as part of constructing the overall tree.

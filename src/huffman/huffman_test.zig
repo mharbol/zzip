@@ -5,7 +5,7 @@ const allocator = std.testing.allocator;
 
 test "Test init Huff Tree" {
     const tree = try huffman.HuffmanTreeNode.init(allocator, 3, 0);
-    defer tree.deinit(allocator);
+    defer tree.deinit();
     try std.testing.expect(tree.isLeafNode());
 }
 
@@ -15,10 +15,10 @@ test "Test compareTo()" {
     const tree2 = try huffman.HuffmanTreeNode.init(allocator, 4, 14);
     const tree3 = try huffman.HuffmanTreeNode.init(allocator, 6, 9);
     defer {
-        tree0.deinit(allocator);
-        tree1.deinit(allocator);
-        tree2.deinit(allocator);
-        tree3.deinit(allocator);
+        tree0.deinit();
+        tree1.deinit();
+        tree2.deinit();
+        tree3.deinit();
     }
     try std.testing.expect(tree0.compareTo(tree1) == -4);
     try std.testing.expect(tree2.compareTo(tree3) == 5);
@@ -29,7 +29,7 @@ test "Test Combine two Leaves" {
     const node1 = try huffman.HuffmanTreeNode.init(allocator, 1, 1);
     const combined = try huffman.HuffmanTreeNode.combine(allocator, node0, node1);
     defer {
-        combined.deinit(allocator);
+        combined.deinit();
     }
     try std.testing.expect(combined.getByte() == 0);
     try std.testing.expect(combined.getCount() == 5);
@@ -43,7 +43,7 @@ test "Test Combine two Leaves with Same Count" {
     const node0 = try huffman.HuffmanTreeNode.init(allocator, 12, 50);
     const node1 = try huffman.HuffmanTreeNode.init(allocator, 34, 50);
     const combined = try huffman.HuffmanTreeNode.combine(allocator, node0, node1);
-    defer combined.deinit(allocator);
+    defer combined.deinit();
     try std.testing.expect(combined.getByte() == 12);
     try std.testing.expect(combined.getCount() == 100);
     try std.testing.expect(combined.getLeft().?.getByte() == 12);
@@ -58,7 +58,7 @@ test "Test Combine with 3" {
     const node_e = try huffman.HuffmanTreeNode.init(allocator, 'E', 7);
     const node_cb = try huffman.HuffmanTreeNode.combine(allocator, node_c, node_b);
     const node_cbe = try huffman.HuffmanTreeNode.combine(allocator, node_e, node_cb);
-    defer node_cbe.deinit(allocator);
+    defer node_cbe.deinit();
 
     // root
     try std.testing.expect(!node_cbe.isLeafNode());
@@ -106,11 +106,11 @@ test "Test Priority Queue Functionality" {
     var pqueue = queue.NodePriorityQueue.init(allocator);
 
     defer {
-        node0.deinit(allocator);
-        node1.deinit(allocator);
-        node2.deinit(allocator);
-        node3.deinit(allocator);
-        node4.deinit(allocator);
+        node0.deinit();
+        node1.deinit();
+        node2.deinit();
+        node3.deinit();
+        node4.deinit();
         pqueue.deinit();
     }
 
