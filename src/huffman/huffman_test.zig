@@ -1,6 +1,7 @@
 const std = @import("std");
 const huffman = @import("huffman.zig");
 const queue = @import("priority_queue.zig");
+
 const allocator = std.testing.allocator;
 
 test "Test init Huff Tree" {
@@ -88,12 +89,12 @@ test "Test Combine with 3" {
 
 test "Test simple count bytes" {
     const data_out = huffman.countBytes("A_DEAD_DAD_CEDED_A_BAD_BABE_A_BEADED_ABACA_BED");
-    try std.testing.expect(data_out['C'] == 2);
-    try std.testing.expect(data_out['B'] == 6);
-    try std.testing.expect(data_out['E'] == 7);
     try std.testing.expect(data_out['_'] == 10);
-    try std.testing.expect(data_out['D'] == 10);
     try std.testing.expect(data_out['A'] == 11);
+    try std.testing.expect(data_out['B'] == 6);
+    try std.testing.expect(data_out['C'] == 2);
+    try std.testing.expect(data_out['D'] == 10);
+    try std.testing.expect(data_out['E'] == 7);
     try std.testing.expect(data_out['R'] == 0);
 }
 
