@@ -3,11 +3,11 @@ const std = @import("std");
 pub const HuffmanTreeNode = struct {
     left: ?*HuffmanTreeNode,
     right: ?*HuffmanTreeNode,
-    count: u32,
+    count: usize,
     byte: u8,
     allocator: std.mem.Allocator,
 
-    pub fn init(allocator: std.mem.Allocator, byte: u8, count: u32) !*HuffmanTreeNode {
+    pub fn init(allocator: std.mem.Allocator, byte: u8, count: usize) !*HuffmanTreeNode {
         const huff_tree = try allocator.create(HuffmanTreeNode);
         huff_tree.allocator = allocator;
         huff_tree.byte = byte;
@@ -63,7 +63,7 @@ pub const HuffmanTreeNode = struct {
         return self.byte;
     }
 
-    pub inline fn getCount(self: *HuffmanTreeNode) u32 {
+    pub inline fn getCount(self: *HuffmanTreeNode) usize {
         return self.count;
     }
 
@@ -84,8 +84,8 @@ pub const HuffmanTreeNode = struct {
     }
 };
 
-pub fn countBytes(data_in: []const u8) [0xff]u32 {
-    var bytes_count = [_]u32{0} ** 0xff;
+pub fn countBytes(data_in: []const u8) [0xff]usize {
+    var bytes_count = [_]usize{0} ** 0xff;
     for (data_in) |value| {
         bytes_count[value] += 1;
     }
