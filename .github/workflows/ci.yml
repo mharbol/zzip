@@ -1,3 +1,11 @@
+name: Run Build and Unit Tests
+on:
+  push:
+    branches: [ "master" ]
+
+permissions:
+  contents: read
+
 jobs:
   test:
     strategy:
