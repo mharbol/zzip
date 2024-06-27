@@ -197,3 +197,41 @@ test "Test Priority Queue With Trees and Leaves" {
     try std.testing.expectEqual(200, next.getCount());
     try std.testing.expectEqual(0, pqueue.len());
 }
+
+test "Test Byte Count To Queue" {
+    const array_in = huffman.countBytes("A_DEAD_DAD_CEDED_A_BAD_BABE_A_BEADED_ABACA_BED");
+    var pqueue = try queue.NodePriorityQueue.initFromByteCount(allocator, array_in);
+    defer pqueue.deinit();
+
+    var next = pqueue.pop();
+    try std.testing.expectEqual('C', next.getByte());
+    try std.testing.expectEqual(2, next.getCount());
+    next.deinit();
+
+    next = pqueue.pop();
+    try std.testing.expectEqual('B', next.getByte());
+    try std.testing.expectEqual(6, next.getCount());
+    next.deinit();
+
+    next = pqueue.pop();
+    try std.testing.expectEqual('E', next.getByte());
+    try std.testing.expectEqual(7, next.getCount());
+    next.deinit();
+
+    next = pqueue.pop();
+    try std.testing.expectEqual('D', next.getByte());
+    try std.testing.expectEqual(10, next.getCount());
+    next.deinit();
+
+    next = pqueue.pop();
+    try std.testing.expectEqual('_', next.getByte());
+    try std.testing.expectEqual(10, next.getCount());
+    next.deinit();
+
+    next = pqueue.pop();
+    try std.testing.expectEqual('A', next.getByte());
+    try std.testing.expectEqual(11, next.getCount());
+    next.deinit();
+
+    try std.testing.expectEqual(0, pqueue.len());
+}

@@ -12,6 +12,9 @@ pub const NodePriorityQueue = struct {
     }
 
     pub fn deinit(self: NodePriorityQueue) void {
+        for (self.heap.items) |item| {
+            item.deinit();
+        }
         self.heap.deinit();
     }
 
@@ -65,5 +68,16 @@ pub const NodePriorityQueue = struct {
         const temp = self.heap.items[i];
         self.heap.items[i] = self.heap.items[j];
         self.heap.items[j] = temp;
+    }
+
+    pub fn initFromByteCount(allocator: std.mem.Allocator, array_in: [0xff]u32) !NodePriorityQueue {
+        var queue_out = NodePriorityQueue.init(allocator);
+        errdefer queue_out.deinit();
+        for (array_in, 0..) |value, idx| {
+            if (value > 0) {
+                try queue_out.push(try huffman.HuffmanTreeNode.init(allocator, @intCast(idx), value));
+            }
+        }
+        return queue_out;
     }
 };
