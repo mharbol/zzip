@@ -235,3 +235,62 @@ test "Test Byte Count To Queue" {
 
     try std.testing.expectEqual(0, pqueue.len());
 }
+
+test "Test Construct Tree from Byte Count" {
+    const array_in = huffman.countBytes("A_DEAD_DAD_CEDED_A_BAD_BABE_A_BEADED_ABACA_BED");
+    const tree = try huffman.HuffmanTreeNode.initTreeFromByteCount(allocator, array_in);
+    // should be a tree that looks like this:
+    //               46
+    //              /  \
+    //             /    \
+    //            20     \
+    //           /  \     \
+    //       D(10)  _(10)  \
+    //                     26
+    //                    /  \
+    //                A(11)  15
+    //                       / \
+    //                   E(7)   8
+    //                         / \
+    //                     C(2)   B(6)
+    defer tree.deinit();
+
+    try std.testing.expectEqual(46, tree.getCount());
+    try std.testing.expect(!tree.isLeafNode());
+
+    try std.testing.expectEqual(20, tree.getLeft().?.getCount());
+    try std.testing.expect(!tree.getLeft().?.isLeafNode());
+
+    try std.testing.expectEqual(10, tree.getLeft().?.getLeft().?.getCount());
+    try std.testing.expectEqual('D', tree.getLeft().?.getLeft().?.getByte());
+    try std.testing.expect(tree.getLeft().?.getLeft().?.isLeafNode());
+
+    try std.testing.expectEqual(10, tree.getLeft().?.getRight().?.getCount());
+    try std.testing.expectEqual('_', tree.getLeft().?.getRight().?.getByte());
+    try std.testing.expect(tree.getLeft().?.getRight().?.isLeafNode());
+
+    try std.testing.expectEqual(26, tree.getRight().?.getCount());
+    try std.testing.expect(!tree.getRight().?.isLeafNode());
+
+    try std.testing.expectEqual(11, tree.getRight().?.getLeft().?.getCount());
+    try std.testing.expectEqual('A', tree.getRight().?.getLeft().?.getByte());
+    try std.testing.expect(tree.getRight().?.getLeft().?.isLeafNode());
+
+    try std.testing.expectEqual(15, tree.getRight().?.getRight().?.getCount());
+    try std.testing.expect(!tree.getRight().?.getRight().?.isLeafNode());
+
+    try std.testing.expectEqual(7, tree.getRight().?.getRight().?.getLeft().?.getCount());
+    try std.testing.expectEqual('E', tree.getRight().?.getRight().?.getLeft().?.getByte());
+    try std.testing.expect(tree.getRight().?.getRight().?.getLeft().?.isLeafNode());
+
+    try std.testing.expectEqual(8, tree.getRight().?.getRight().?.getRight().?.getCount());
+    try std.testing.expect(!tree.getRight().?.getRight().?.getRight().?.isLeafNode());
+
+    try std.testing.expectEqual(2, tree.getRight().?.getRight().?.getRight().?.getLeft().?.getCount());
+    try std.testing.expectEqual('C', tree.getRight().?.getRight().?.getRight().?.getLeft().?.getByte());
+    try std.testing.expect(tree.getRight().?.getRight().?.getRight().?.getLeft().?.isLeafNode());
+
+    try std.testing.expectEqual(6, tree.getRight().?.getRight().?.getRight().?.getRight().?.getCount());
+    try std.testing.expectEqual('B', tree.getRight().?.getRight().?.getRight().?.getRight().?.getByte());
+    try std.testing.expect(tree.getRight().?.getRight().?.getRight().?.getRight().?.isLeafNode());
+}

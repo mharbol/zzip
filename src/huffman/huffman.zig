@@ -1,4 +1,5 @@
 const std = @import("std");
+pub const queue = @import("priority_queue.zig");
 
 pub const HuffmanTreeNode = struct {
     left: ?*HuffmanTreeNode,
@@ -81,6 +82,23 @@ pub const HuffmanTreeNode = struct {
 
     pub inline fn getRight(self: *HuffmanTreeNode) ?*HuffmanTreeNode {
         return self.right;
+    }
+
+    pub fn initTreeFromByteCount(allocator: std.mem.Allocator, array_in: [0xff]usize) !*HuffmanTreeNode {
+        var pqueue = try queue.NodePriorityQueue.initFromByteCount(allocator, array_in);
+        defer pqueue.deinit();
+        errdefer pqueue.deinit();
+
+        while (1 < pqueue.len()) {
+            const node0 = pqueue.pop();
+            const node1 = pqueue.pop();
+            errdefer {
+                node0.deinit();
+                node1.deinit();
+            }
+            try pqueue.push(try combine(allocator, node0, node1));
+        }
+        return pqueue.pop();
     }
 };
 
