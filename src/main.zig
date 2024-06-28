@@ -21,4 +21,7 @@ pub fn main() !void {
         std.debug.print("{} ", .{i});
     }
     std.debug.print("\n", .{});
+
+    const big : u256 = 34;
+    std.debug.print("{} - {}\n", .{big, @sizeOf(@TypeOf(big))});
 }
