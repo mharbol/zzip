@@ -36,6 +36,30 @@ test "Test Encode Greater than 255 RLE" {
     try std.testing.expectEqualSlices(u8, &expected, actual.items);
 }
 
+test "Test Decode Exactly 254" {
+    const arr = [_]u8{'f'} ++ [_]u8{'a'} ** 254 ++ "bc";
+    const expected = [_]u8 {'f', 1, 'a', 254, 'b', 1, 'c', 1};
+    const actual = try rle.encodeSlice(allocator, arr);
+    defer actual.deinit();
+    try std.testing.expectEqualSlices(u8, &expected, actual.items);
+}
+
+test "Test Decode Exactly 255" {
+    const arr = [_]u8{'f'} ++ [_]u8{'a'} ** 255 ++ "bc";
+    const expected = [_]u8 {'f', 1, 'a', 255, 'b', 1, 'c', 1};
+    const actual = try rle.encodeSlice(allocator, arr);
+    defer actual.deinit();
+    try std.testing.expectEqualSlices(u8, &expected, actual.items);
+}
+
+test "Test Decode Exactly 256" {
+    const arr = [_]u8{'f'} ++ [_]u8{'a'} ** 256 ++ "bc";
+    const expected = [_]u8 {'f', 1, 'a', 255, 'a', 1, 'b', 1, 'c', 1};
+    const actual = try rle.encodeSlice(allocator, arr);
+    defer actual.deinit();
+    try std.testing.expectEqualSlices(u8, &expected, actual.items);
+}
+
 // Decode tests
 test "Test Basic Decode" {
     const arr = [_]u8{ 1, 1, 2, 2, 3, 3, 4, 4 };
