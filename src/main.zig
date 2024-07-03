@@ -1,5 +1,5 @@
 const std = @import("std");
-const rle = @import("rle/rle.zig");
+const rle = @import("v0/rle/rle.zig");
 const util = @import("util/util.zig");
 
 pub fn main() !void {

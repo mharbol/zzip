@@ -11,21 +11,21 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
 
-    const lib_rle = b.addStaticLibrary(.{
-        .name = "rle",
-        .root_source_file = b.path("src/rle/rle.zig"),
+    const lib_rle_v0 = b.addStaticLibrary(.{
+        .name = "rle_v0",
+        .root_source_file = b.path("src/v0/rle/rle.zig"),
         .target = target,
         .optimize = optimize,
     });
-    b.installArtifact(lib_rle);
+    b.installArtifact(lib_rle_v0);
 
-    const lib_huff = b.addStaticLibrary(.{
-        .name = "huffman",
-        .root_source_file = b.path("src/huffman/huffman.zig"),
+    const lib_huff_v0 = b.addStaticLibrary(.{
+        .name = "huffman_v0",
+        .root_source_file = b.path("src/v0/huffman/huffman.zig"),
         .target = target,
         .optimize = optimize,
     });
-    b.installArtifact(lib_huff);
+    b.installArtifact(lib_huff_v0);
 
     const lib_util = b.addStaticLibrary(.{
         .name = "util",
@@ -44,12 +44,12 @@ pub fn build(b: *std.Build) void {
     const run_step = b.step("run", "Run the app");
     run_step.dependOn(&run_cmd.step);
 
-    const lib_rle_unit_tests = b.addTest(.{
-        .root_source_file = b.path("src/rle/rle.zig"),
+    const lib_rle_v0_unit_tests = b.addTest(.{
+        .root_source_file = b.path("src/v0/rle/rle.zig"),
         .target = target,
         .optimize = optimize,
     });
-    const run_lib_rle_unit_tests = b.addRunArtifact(lib_rle_unit_tests);
+    const run_lib_rle_v0_unit_tests = b.addRunArtifact(lib_rle_v0_unit_tests);
 
     const lib_util_unit_tests = b.addTest(.{
         .root_source_file = b.path("src/util/util.zig"),
@@ -58,12 +58,12 @@ pub fn build(b: *std.Build) void {
     });
     const run_lib_util_unit_tests = b.addRunArtifact(lib_util_unit_tests);
 
-    const lib_huff_unit_tests = b.addTest(.{
-        .root_source_file = b.path("src/huffman/huffman.zig"),
+    const lib_huff_v0_unit_tests = b.addTest(.{
+        .root_source_file = b.path("src/v0/huffman/huffman.zig"),
         .target = target,
         .optimize = optimize,
     });
-    const run_lib_huff_unit_tests = b.addRunArtifact(lib_huff_unit_tests);
+    const run_lib_huff_v0_unit_tests = b.addRunArtifact(lib_huff_v0_unit_tests);
 
     const exe_unit_tests = b.addTest(.{
         .root_source_file = b.path("src/main.zig"),
@@ -76,7 +76,7 @@ pub fn build(b: *std.Build) void {
 
     const test_step = b.step("test", "Run unit tests");
     test_step.dependOn(&run_exe_unit_tests.step);
-    test_step.dependOn(&run_lib_rle_unit_tests.step);
+    test_step.dependOn(&run_lib_rle_v0_unit_tests.step);
     test_step.dependOn(&run_lib_util_unit_tests.step);
-    test_step.dependOn(&run_lib_huff_unit_tests.step);
+    test_step.dependOn(&run_lib_huff_v0_unit_tests.step);
 }
