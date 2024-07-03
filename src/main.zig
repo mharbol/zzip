@@ -1,6 +1,6 @@
 const std = @import("std");
-const rle = @import("rle");
-const util = @import("util");
+const rle = @import("rle/rle.zig");
+const util = @import("util/util.zig");
 
 pub fn main() !void {
     std.debug.print("{any}\n", .{util.bytes.bigEndU16(0x10ff)});
