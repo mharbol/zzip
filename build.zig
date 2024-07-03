@@ -53,7 +53,7 @@ pub fn build(b: *std.Build) void {
     run_step.dependOn(&run_cmd.step);
 
     const lib_rle_unit_tests = b.addTest(.{
-        .root_source_file = b.path("src/rle/rle_test.zig"),
+        .root_source_file = b.path("src/rle/rle.zig"),
         .target = target,
         .optimize = optimize,
     });
@@ -67,7 +67,7 @@ pub fn build(b: *std.Build) void {
     const run_lib_util_unit_tests = b.addRunArtifact(lib_util_unit_tests);
 
     const lib_huff_unit_tests = b.addTest(.{
-        .root_source_file = b.path("src/huffman/huffman_test.zig"),
+        .root_source_file = b.path("src/huffman/huffman.zig"),
         .target = target,
         .optimize = optimize,
     });

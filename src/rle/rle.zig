@@ -61,3 +61,7 @@ pub fn decodeSlice(allocator: std.mem.Allocator, data_in: []const u8) !std.Array
     }
     return arr_out;
 }
+
+test "Test all RLE" {
+    _ = @import("rle_test.zig");
+}

@@ -109,3 +109,7 @@ pub fn countBytes(data_in: []const u8) [0xff]usize {
     }
     return bytes_count;
 }
+
+test "Test All Huffman" {
+    _ = @import("huffman_test.zig");
+}
