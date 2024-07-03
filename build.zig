@@ -27,14 +27,6 @@ pub fn build(b: *std.Build) void {
     });
     b.installArtifact(lib_huff);
 
-    const lib_file = b.addStaticLibrary(.{
-        .name = "rle",
-        .root_source_file = b.path("src/file/file.zig"),
-        .target = target,
-        .optimize = optimize,
-    });
-    b.installArtifact(lib_file);
-
     const lib_util = b.addStaticLibrary(.{
         .name = "util",
         .root_source_file = b.path("src/util/util.zig"),
