@@ -1,13 +1,13 @@
 const std = @import("std");
-const huffman = @import("huffman.zig");
+const tree = @import("huffman.zig").tree;
 
 /// Purpose-built binary heap to order nodes while building the Huffman tree
 pub const NodePriorityQueue = struct {
-    heap: std.ArrayList(*huffman.HuffmanTreeNode),
+    heap: std.ArrayList(*tree.HuffmanTreeNode),
 
     pub fn init(allocator: std.mem.Allocator) NodePriorityQueue {
         return .{
-            .heap = std.ArrayList(*huffman.HuffmanTreeNode).init(allocator),
+            .heap = std.ArrayList(*tree.HuffmanTreeNode).init(allocator),
         };
     }
 
@@ -18,7 +18,7 @@ pub const NodePriorityQueue = struct {
         self.heap.deinit();
     }
 
-    pub fn push(self: *NodePriorityQueue, node: *huffman.HuffmanTreeNode) !void {
+    pub fn push(self: *NodePriorityQueue, node: *tree.HuffmanTreeNode) !void {
         var idx = self.len();
         try self.heap.append(node);
         while (idx > 0 and self.heap.items[(idx - 1) / 2].compareTo(self.heap.items[idx]) > 0) {
@@ -27,7 +27,7 @@ pub const NodePriorityQueue = struct {
         }
     }
 
-    pub fn pop(self: *NodePriorityQueue) *huffman.HuffmanTreeNode {
+    pub fn pop(self: *NodePriorityQueue) *tree.HuffmanTreeNode {
         const sz = self.len();
         const lowest = self.heap.items[0];
         self.heap.items[0] = self.heap.items[sz - 1];
@@ -75,9 +75,13 @@ pub const NodePriorityQueue = struct {
         errdefer queue_out.deinit();
         for (array_in, 0..) |value, idx| {
             if (value > 0) {
-                try queue_out.push(try huffman.HuffmanTreeNode.init(allocator, @intCast(idx), value));
+                try queue_out.push(try tree.HuffmanTreeNode.init(allocator, @intCast(idx), value));
             }
         }
         return queue_out;
     }
 };
+
+test "Test All Priority Queue" {
+    _ = @import("priority_queue_test.zig");
+}
