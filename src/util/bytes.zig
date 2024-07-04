@@ -1,7 +1,7 @@
 const testing = @import("std").testing;
 
 inline fn shiftMask(number: anytype, comptime bytesShifted: u8) u8 {
-    return @truncate((number >> 8 * bytesShifted) & 0xff);
+    return @truncate(number >> 8 * bytesShifted);
 }
 
 pub fn bigEndU16(number: u16) [2]u8 {

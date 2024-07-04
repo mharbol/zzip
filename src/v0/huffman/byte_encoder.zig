@@ -1,4 +1,5 @@
 const std = @import("std");
+
 /// Encoding of a specific byte to a bit sequence as determined
 /// by the byte array's Huffman tree.
 pub const ByteEncoding = struct {
@@ -63,3 +64,7 @@ pub const ByteEncoding = struct {
         return list_out;
     }
 };
+
+test "Test Encoder" {
+    _ = @import("byte_encoder_test.zig");
+}
