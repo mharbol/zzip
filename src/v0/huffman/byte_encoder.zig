@@ -38,7 +38,7 @@ pub const ByteEncoding = struct {
     ///
     /// So if num_bits = 9, bit_seq = 0b00...010110010, and byte = 12 the output would be:
     /// {0b00001100 (byte), 0b00001001 (num_bits), 0b00000000, 0b10110010 (bit_seq)}
-    pub fn serialize(self: *ByteEncoding, allocator: std.mem.Allocator) !std.ArrayList(u8) {
+    pub fn serialize(self: *const ByteEncoding, allocator: std.mem.Allocator) !std.ArrayList(u8) {
         var list_out = std.ArrayList(u8).init(allocator);
         errdefer list_out.deinit();
 
@@ -48,16 +48,19 @@ pub const ByteEncoding = struct {
         // to avoid a lot of funky shifts, append 0 the-number-of-bytes-needed times
         // and then assign the bytes backwards
         // Number of bytes needed is ceiling(num_bits / 8)
-        const num_bytes_needed: u8 = self.num_bits / 8 + (if (0 == self.num_bits % 8) 0 else 1);
+        var num_bytes_needed: u8 = self.num_bits / 8;
+        if (0 != self.num_bits % 8) {
+            num_bytes_needed += 1;
+        }
         for (0..num_bytes_needed) |_| {
             try list_out.append(0);
         }
 
         // assign backwards
         var seq = self.bit_seq;
-        const len = list_out.items.len;
+        const idx_end = list_out.items.len - 1;
         for (0..num_bytes_needed) |idx_offset| {
-            list_out.items[len - idx_offset] = @truncate(seq & 0xff);
+            list_out.items[idx_end - idx_offset] = @truncate(seq & 0xff);
             seq >>= 8;
         }
 
