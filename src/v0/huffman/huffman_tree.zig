@@ -46,8 +46,8 @@ pub const HuffmanTreeNode = struct {
 
     /// Compares only individual nodes for the sake of a priority queue and insertion.
     /// NOT for comparing whole trees
-    pub fn compareTo(self: *HuffmanTreeNode, other: *HuffmanTreeNode) i32 {
-        var diff: i32 = @intCast(self.count);
+    pub fn compareTo(self: *HuffmanTreeNode, other: *HuffmanTreeNode) isize {
+        var diff: isize = @intCast(self.count);
         diff -= @intCast(other.count);
         if (0 == diff) {
             diff = @intCast(self.byte);

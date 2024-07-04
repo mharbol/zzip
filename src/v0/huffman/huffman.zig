@@ -18,3 +18,7 @@ test "Test All Huffman" {
 test "Test All Queue" {
     _ = @import("priority_queue.zig");
 }
+
+test "Test All Byte Encoder" {
+    _ = @import("byte_encoder.zig");
+}
