@@ -2,7 +2,7 @@ const std = @import("std");
 
 pub const queue = @import("priority_queue.zig");
 pub const tree = @import("huffman_tree.zig");
-pub const encoding = @import("byte_encoder.zig");
+pub const encoding = @import("byte_encoding.zig");
 
 pub fn countBytes(data_in: []const u8) [0xff]usize {
     var bytes_count = [_]usize{0} ** 0xff;
@@ -20,6 +20,6 @@ test "Test All Queue" {
     _ = @import("priority_queue.zig");
 }
 
-test "Test All Byte Encoder" {
-    _ = @import("byte_encoder.zig");
+test "Test All Byte Encoding" {
+    _ = @import("byte_encoding.zig");
 }

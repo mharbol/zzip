@@ -15,8 +15,7 @@ pub const ByteEncoding = struct {
     //
     // The maximum Huffman tree depth (albeit very hard to do) for bytes
     // is 255 so 256 is the size of the bit sequence in this first iteration
-    // of the application. Future versions will address this to bring the max
-    // bit sequence down to a more reasonable size.
+    // of the application.
     bit_seq: u256,
 
     // number of bits which make up the sequence
@@ -69,5 +68,5 @@ pub const ByteEncoding = struct {
 };
 
 test "Test Encoder" {
-    _ = @import("byte_encoder_test.zig");
+    _ = @import("byte_encoding_test.zig");
 }
