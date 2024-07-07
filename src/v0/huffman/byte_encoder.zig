@@ -60,7 +60,7 @@ pub const ByteEncoding = struct {
         var seq = self.bit_seq;
         const idx_end = list_out.items.len - 1;
         for (0..num_bytes_needed) |idx_offset| {
-            list_out.items[idx_end - idx_offset] = @truncate(seq & 0xff);
+            list_out.items[idx_end - idx_offset] = @truncate(seq);
             seq >>= 8;
         }
 
