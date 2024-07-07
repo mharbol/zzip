@@ -1,6 +1,7 @@
 const std = @import("std");
 const huffman = @import("huffman.zig");
 const queue = @import("priority_queue.zig");
+const encoder = @import("byte_encoder.zig");
 
 const allocator = std.testing.allocator;
 
@@ -192,4 +193,12 @@ test "Test Construct Tree from Byte Count" {
     try std.testing.expectEqual(6, tree.getRight().?.getRight().?.getRight().?.getRight().?.getCount());
     try std.testing.expectEqual('B', tree.getRight().?.getRight().?.getRight().?.getRight().?.getByte());
     try std.testing.expect(tree.getRight().?.getRight().?.getRight().?.getRight().?.isLeafNode());
+}
+
+test "Test Build Encoder" {
+    const array_in = huffman.countBytes("A_DEAD_DAD_CEDED_A_BAD_BABE_A_BEADED_ABACA_BED");
+    const tree = try huffman.tree.HuffmanTreeNode.initTreeFromByteCount(allocator, array_in);
+    defer tree.deinit();
+    var enc = try tree.getEncoder(allocator);
+    defer enc.deinit();
 }

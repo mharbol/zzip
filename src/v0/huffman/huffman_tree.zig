@@ -1,5 +1,7 @@
 const std = @import("std");
 const queue = @import("priority_queue.zig");
+const encoder = @import("byte_encoder.zig");
+const encoding = @import("byte_encoding.zig");
 
 pub const HuffmanTreeNode = struct {
     left: ?*HuffmanTreeNode,
@@ -99,6 +101,36 @@ pub const HuffmanTreeNode = struct {
             try pqueue.push(try combine(allocator, node0, node1));
         }
         return pqueue.pop();
+    }
+
+    pub fn getEncoder(self: *HuffmanTreeNode, allocator: std.mem.Allocator) !encoder.ByteEncoder {
+        var encoder_out = encoder.ByteEncoder.init(allocator);
+        errdefer encoder_out.deinit();
+        try self.walkTreeWithEncoder(&encoder_out, 0, 0);
+        return encoder_out;
+    }
+
+    /// Tree walk to get the full ByteEncoder.
+    /// The bit sequence is the sequence that took place to get to the current working node.
+    /// Similarly, the depth is the depth to get there.
+    /// This means that both will be set by the recursive calls.
+    fn walkTreeWithEncoder(self: *HuffmanTreeNode, enc_ptr: *encoder.ByteEncoder, bit_seq: u256, depth: u8) !void {
+        // add encoding if at leaf node
+        if (self.isLeafNode()) {
+            try enc_ptr.putEncoding(encoding.ByteEncoding.new(self.getByte(), bit_seq, depth));
+        } else {
+            // recursive step, encode left and right nodes
+            if (self.left) |left| {
+                // left is 0 to the sequence
+                const new_seq: u256 = bit_seq << 1;
+                try left.walkTreeWithEncoder(enc_ptr, new_seq, depth + 1);
+            }
+            if (self.right) |right| {
+                // right is 1 to the sequence
+                const new_seq: u256 = (bit_seq << 1) | 1;
+                try right.walkTreeWithEncoder(enc_ptr, new_seq, depth + 1);
+            }
+        }
     }
 };
 
