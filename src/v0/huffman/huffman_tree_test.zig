@@ -198,7 +198,36 @@ test "Test Construct Tree from Byte Count" {
 test "Test Build Encoder" {
     const array_in = huffman.countBytes("A_DEAD_DAD_CEDED_A_BAD_BABE_A_BEADED_ABACA_BED");
     const tree = try huffman.tree.HuffmanTreeNode.initTreeFromByteCount(allocator, array_in);
-    defer tree.deinit();
     var enc = try tree.getEncoder(allocator);
-    defer enc.deinit();
+
+    defer {
+        tree.deinit();
+        enc.deinit();
+    }
+
+    try std.testing.expectEqual(6, enc.map.count());
+
+    try std.testing.expectEqual('A', enc.getEncoding('A').?.byte);
+    try std.testing.expectEqual(0b10, enc.getEncoding('A').?.bit_seq);
+    try std.testing.expectEqual(2, enc.getEncoding('A').?.num_bits);
+
+    try std.testing.expectEqual('B', enc.getEncoding('B').?.byte);
+    try std.testing.expectEqual(0b1111, enc.getEncoding('B').?.bit_seq);
+    try std.testing.expectEqual(4, enc.getEncoding('B').?.num_bits);
+
+    try std.testing.expectEqual('C', enc.getEncoding('C').?.byte);
+    try std.testing.expectEqual(0b1110, enc.getEncoding('C').?.bit_seq);
+    try std.testing.expectEqual(4, enc.getEncoding('C').?.num_bits);
+
+    try std.testing.expectEqual('D', enc.getEncoding('D').?.byte);
+    try std.testing.expectEqual(0b00, enc.getEncoding('D').?.bit_seq);
+    try std.testing.expectEqual(2, enc.getEncoding('D').?.num_bits);
+
+    try std.testing.expectEqual('E', enc.getEncoding('E').?.byte);
+    try std.testing.expectEqual(0b110, enc.getEncoding('E').?.bit_seq);
+    try std.testing.expectEqual(3, enc.getEncoding('E').?.num_bits);
+
+    try std.testing.expectEqual('_', enc.getEncoding('_').?.byte);
+    try std.testing.expectEqual(0b01, enc.getEncoding('_').?.bit_seq);
+    try std.testing.expectEqual(2, enc.getEncoding('_').?.num_bits);
 }
