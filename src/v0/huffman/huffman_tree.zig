@@ -86,7 +86,7 @@ pub const HuffmanTreeNode = struct {
         return self.right;
     }
 
-    pub fn initTreeFromByteCount(allocator: std.mem.Allocator, array_in: [0xff]usize) !*HuffmanTreeNode {
+    pub fn initTreeFromByteCount(allocator: std.mem.Allocator, array_in: [0x100]usize) !*HuffmanTreeNode {
         var pqueue = try queue.NodePriorityQueue.initFromByteCount(allocator, array_in);
         defer pqueue.deinit();
         errdefer pqueue.deinit();

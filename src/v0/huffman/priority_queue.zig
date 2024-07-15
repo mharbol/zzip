@@ -70,7 +70,7 @@ pub const NodePriorityQueue = struct {
         self.heap.items[j] = temp;
     }
 
-    pub fn initFromByteCount(allocator: std.mem.Allocator, array_in: [0xff]usize) !NodePriorityQueue {
+    pub fn initFromByteCount(allocator: std.mem.Allocator, array_in: [0x100]usize) !NodePriorityQueue {
         var queue_out = NodePriorityQueue.init(allocator);
         errdefer queue_out.deinit();
         for (array_in, 0..) |value, idx| {

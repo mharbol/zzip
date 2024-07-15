@@ -5,8 +5,8 @@ pub const tree = @import("huffman_tree.zig");
 pub const encoding = @import("byte_encoding.zig");
 pub const encoder = @import("byte_encoder.zig");
 
-pub fn countBytes(data_in: []const u8) [0xff]usize {
-    var bytes_count = [_]usize{0} ** 0xff;
+pub fn countBytes(data_in: []const u8) [0x100]usize {
+    var bytes_count = [_]usize{0} ** 0x100;
     for (data_in) |value| {
         bytes_count[value] += 1;
     }
