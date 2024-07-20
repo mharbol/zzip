@@ -30,6 +30,13 @@ pub const ByteEncoding = struct {
         };
     }
 
+    /// Another fast method for encoding. This would be a cool way to learn iterators, but
+    /// want to get the MVP out and working.
+    /// Returns true if the bit at idx (from the left to the right) is one, otherwise false.
+    pub fn isBitOneAtIdx(self: *const ByteEncoding, idx: u8) bool {
+        return ((self.bit_seq >> (self.num_bits - 1 - idx)) & 1) == 1;
+    }
+
     /// Writes the byte encoding to an ArrayList based on the number of bits.
     /// Array out in order is {byte, num_bits, <bit sequence in as few bytes possible>...}
     ///
@@ -37,6 +44,8 @@ pub const ByteEncoding = struct {
     ///
     /// So if num_bits = 9, bit_seq = 0b00...010110010, and byte = 12 the output would be:
     /// {0b00001100 (byte), 0b00001001 (num_bits), 0b00000000, 0b10110010 (bit_seq)}
+    ///
+    /// Got a little carried away with this and so it's not really needed. Good exercise though.
     pub fn serialize(self: *const ByteEncoding, allocator: std.mem.Allocator) !std.ArrayList(u8) {
         var list_out = std.ArrayList(u8).init(allocator);
         errdefer list_out.deinit();

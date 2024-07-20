@@ -34,3 +34,31 @@ test "Test Serialize 4" {
     const expected = [_]u8{ 'D', 6, 0b010110 };
     try std.testing.expectEqualSlices(u8, &expected, out.items);
 }
+
+test "Test Bit is One A" {
+    const enc = encoder.ByteEncoding.new('A', 0b00110010, 6);
+    try std.testing.expect(enc.isBitOneAtIdx(0));
+    try std.testing.expect(enc.isBitOneAtIdx(1));
+    try std.testing.expect(!enc.isBitOneAtIdx(2));
+    try std.testing.expect(!enc.isBitOneAtIdx(3));
+    try std.testing.expect(enc.isBitOneAtIdx(4));
+    try std.testing.expect(!enc.isBitOneAtIdx(5));
+}
+
+test "Test Bit is One B" {
+    const enc = encoder.ByteEncoding.new('B', 0b10011011001100, 14);
+    try std.testing.expect(enc.isBitOneAtIdx(0));
+    try std.testing.expect(!enc.isBitOneAtIdx(1));
+    try std.testing.expect(!enc.isBitOneAtIdx(2));
+    try std.testing.expect(enc.isBitOneAtIdx(3));
+    try std.testing.expect(enc.isBitOneAtIdx(4));
+    try std.testing.expect(!enc.isBitOneAtIdx(5));
+    try std.testing.expect(enc.isBitOneAtIdx(6));
+    try std.testing.expect(enc.isBitOneAtIdx(7));
+    try std.testing.expect(!enc.isBitOneAtIdx(8));
+    try std.testing.expect(!enc.isBitOneAtIdx(9));
+    try std.testing.expect(enc.isBitOneAtIdx(10));
+    try std.testing.expect(enc.isBitOneAtIdx(11));
+    try std.testing.expect(!enc.isBitOneAtIdx(12));
+    try std.testing.expect(!enc.isBitOneAtIdx(13));
+}
