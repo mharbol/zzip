@@ -231,3 +231,19 @@ test "Test Build Encoder" {
     try std.testing.expectEqual(0b01, enc.getEncoding('_').?.bit_seq);
     try std.testing.expectEqual(2, enc.getEncoding('_').?.num_bits);
 }
+
+test "Test Decode Bytes" {
+    const example_bytes = "A_DEAD_DAD_CEDED_A_BAD_BABE_A_BEADED_ABACA_BED";
+    const array_in = huffman.countBytes(example_bytes);
+    const tree = try huffman.tree.HuffmanTreeNode.initTreeFromByteCount(allocator, array_in);
+    const bits_in = [_]u8{ 0b10010011, 0b01000010, 0b01000011, 0b11011000, 0b11000011, 0b00111111,
+                            0b00001111, 0b11011111, 0b10011001, 0b11111101, 0b00011000, 0b01101111,
+                            0b10111010, 0b01111111, 0b00000000 };
+    const bytes_out = try tree.decodeBytes(allocator, &bits_in, @intCast(example_bytes.len));
+    defer {
+        tree.deinit();
+        bytes_out.deinit();
+    }
+
+    try std.testing.expectEqualSlices(u8, example_bytes, bytes_out.items);
+}

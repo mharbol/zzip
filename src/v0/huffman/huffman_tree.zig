@@ -2,6 +2,7 @@ const std = @import("std");
 const queue = @import("priority_queue.zig");
 const encoder = @import("byte_encoder.zig");
 const encoding = @import("byte_encoding.zig");
+const BitIterator = @import("bit_iterator.zig").BitIterator;
 
 pub const HuffmanTreeNode = struct {
     left: ?*HuffmanTreeNode,
@@ -131,6 +132,32 @@ pub const HuffmanTreeNode = struct {
                 try right.walkTreeWithEncoder(enc_ptr, new_seq, depth + 1);
             }
         }
+    }
+
+    /// Uses this tree to decode the encoded bytes.
+    pub fn decodeBytes(self: *HuffmanTreeNode, allocator: std.mem.Allocator, encoded_bytes: []const u8, num_decoded: u64) !std.ArrayList(u8) {
+        var arr_out = std.ArrayList(u8).init(allocator);
+        errdefer arr_out.deinit();
+        
+        var iter = BitIterator.new(encoded_bytes);
+
+        for (0..num_decoded) |_| {
+            try arr_out.append(try self.decodeNextByte(&iter));
+        }
+
+        return arr_out;
+    }
+
+    fn decodeNextByte(self: *HuffmanTreeNode, iter: *BitIterator) !u8 {
+        var curr_node = self;
+        while (!curr_node.isLeafNode()) {
+            if (iter.isNextBitOne()) {
+                curr_node = curr_node.right.?;
+            } else {
+                curr_node = curr_node.left.?;
+            }
+        }
+        return curr_node.getByte();
     }
 };
 
