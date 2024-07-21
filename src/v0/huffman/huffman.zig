@@ -28,3 +28,7 @@ test "Test All Byte Encoding" {
 test "Test All Byte Encoder" {
     _ = @import("byte_encoder.zig");
 }
+
+test "Test Bit Iterator" {
+    _ = @import("bit_iterator.zig");
+}
