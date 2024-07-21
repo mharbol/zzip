@@ -176,7 +176,6 @@ pub const HuffmanTreeNode = struct {
     }
 
     fn appendNode(self: *HuffmanTreeNode, arr: *std.ArrayList(u16)) !u16 {
-
         const address: u16 = @intCast(arr.items.len);
 
         if (self.isLeafNode()) {
@@ -192,6 +191,70 @@ pub const HuffmanTreeNode = struct {
             arr.items[address + 2] = right_addr;
         }
         return address;
+    }
+
+    pub fn deserialize(allocator: std.mem.Allocator, bytes: []const u8) !*HuffmanTreeNode {
+        const arr_in = try u8ArrToU16Arr(allocator, bytes);
+        defer arr_in.deinit();
+        if (0 == arr_in.items[0]) {
+            return try deserializeFork(allocator, arr_in.items, 0);
+        } else {
+            return try deserializeLeaf(allocator, arr_in.items, 0);
+        }
+    }
+
+    /// New fork from arr_in
+    /// Assumes idx points to a fork slot
+    fn deserializeFork(allocator: std.mem.Allocator, arr_in: []const u16, idx: u16) !*HuffmanTreeNode {
+        var node = try init(allocator, 0, 0);
+        errdefer node.deinit();
+        const left_addr = arr_in[idx + 1];
+        const right_addr = arr_in[idx + 2];
+        if (1 == arr_in[left_addr]) {
+            node.setLeft(try deserializeLeaf(allocator, arr_in, left_addr));
+        } else {
+            node.setLeft(try deserializeFork(allocator, arr_in, left_addr));
+        }
+        if (1 == arr_in[right_addr]) {
+            node.setRight(try deserializeLeaf(allocator, arr_in, right_addr));
+        } else {
+            node.setRight(try deserializeFork(allocator, arr_in, right_addr));
+        }
+        return node;
+    }
+
+    /// New leaf from the arr_in
+    /// Assumes idx points to a leaf node slot
+    inline fn deserializeLeaf(allocator: std.mem.Allocator, arr_in: []const u16, idx: u16) !*HuffmanTreeNode {
+        return init(allocator, @truncate(arr_in[idx + 1]), 0);
+    }
+
+    pub fn u16ArrToU8Arr(allocator: std.mem.Allocator, arr_in: []const u16) !std.ArrayList(u8) {
+        var arr_out = std.ArrayList(u8).init(allocator);
+        errdefer arr_out.deinit();
+
+        for (arr_in) |value| {
+            try arr_out.append(@truncate(value >> 8));
+            try arr_out.append(@truncate(value));
+        }
+
+        return arr_out;
+    }
+
+    fn u8ArrToU16Arr(allocator: std.mem.Allocator, arr_in: []const u8) !std.ArrayList(u16) {
+        var arr_out = std.ArrayList(u16).init(allocator);
+        errdefer arr_out.deinit();
+
+        var first_byte: u8 = 0;
+        for (arr_in, 0..) |byte, idx| {
+            if (idx % 2 == 0) {
+                first_byte = byte;
+            } else {
+                try arr_out.append((@as(u16, first_byte) << 8) | @as(u16, byte));
+            }
+        }
+
+        return arr_out;
     }
 };
 

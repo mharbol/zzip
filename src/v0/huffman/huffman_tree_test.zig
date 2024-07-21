@@ -285,3 +285,68 @@ test "Test Serialize Big Tree" {
 
     try std.testing.expectEqualSlices(u16, &expected, ser.items);
 }
+
+test "Test Deserialize Leaf" {
+    const arr_in = [_]u16{1, 'A'};
+    const bytes = try huffman.tree.HuffmanTreeNode.u16ArrToU8Arr(allocator, &arr_in);
+    const node = try huffman.tree.HuffmanTreeNode.deserialize(allocator, bytes.items);
+    defer {
+        bytes.deinit();
+        node.deinit();
+    }
+    try std.testing.expectEqual('A', node.getByte());
+    try std.testing.expect(node.isLeafNode());
+}
+
+test "Test Deserialize Fork" {
+    const arr_in  = [_]u16{0, 3, 5, 1, 'L', 1, 'R'};
+    const bytes = try huffman.tree.HuffmanTreeNode.u16ArrToU8Arr(allocator, &arr_in);
+    const tree = try huffman.tree.HuffmanTreeNode.deserialize(allocator, bytes.items);
+    defer {
+        bytes.deinit();
+        tree.deinit();
+    }
+    try std.testing.expect(!tree.isLeafNode());
+    try std.testing.expect(tree.getLeft().?.isLeafNode());
+    try std.testing.expectEqual('L', tree.getLeft().?.getByte());
+    try std.testing.expect(tree.getRight().?.isLeafNode());
+    try std.testing.expectEqual('R', tree.getRight().?.getByte());
+}
+
+test "Test Deserialize Big Tree" {
+    const arr_in = [_]u16{ 0, 3, 10, 0, 6, 8, 1, 'D', 1, '_', 0, 13, 15, 1, 'A', 0, 18, 20, 1, 'E', 0, 23, 25, 1, 'C', 1, 'B' };
+    const bytes = try huffman.tree.HuffmanTreeNode.u16ArrToU8Arr(allocator, &arr_in);
+    const tree = try huffman.tree.HuffmanTreeNode.deserialize(allocator, bytes.items);
+    defer {
+        bytes.deinit();
+        tree.deinit();
+    }
+
+    try std.testing.expect(!tree.isLeafNode());
+
+    try std.testing.expect(!tree.getLeft().?.isLeafNode());
+
+    try std.testing.expectEqual('D', tree.getLeft().?.getLeft().?.getByte());
+    try std.testing.expect(tree.getLeft().?.getLeft().?.isLeafNode());
+
+    try std.testing.expectEqual('_', tree.getLeft().?.getRight().?.getByte());
+    try std.testing.expect(tree.getLeft().?.getRight().?.isLeafNode());
+
+    try std.testing.expect(!tree.getRight().?.isLeafNode());
+
+    try std.testing.expectEqual('A', tree.getRight().?.getLeft().?.getByte());
+    try std.testing.expect(tree.getRight().?.getLeft().?.isLeafNode());
+
+    try std.testing.expect(!tree.getRight().?.getRight().?.isLeafNode());
+
+    try std.testing.expectEqual('E', tree.getRight().?.getRight().?.getLeft().?.getByte());
+    try std.testing.expect(tree.getRight().?.getRight().?.getLeft().?.isLeafNode());
+
+    try std.testing.expect(!tree.getRight().?.getRight().?.getRight().?.isLeafNode());
+
+    try std.testing.expectEqual('C', tree.getRight().?.getRight().?.getRight().?.getLeft().?.getByte());
+    try std.testing.expect(tree.getRight().?.getRight().?.getRight().?.getLeft().?.isLeafNode());
+
+    try std.testing.expectEqual('B', tree.getRight().?.getRight().?.getRight().?.getRight().?.getByte());
+    try std.testing.expect(tree.getRight().?.getRight().?.getRight().?.getRight().?.isLeafNode());
+}
