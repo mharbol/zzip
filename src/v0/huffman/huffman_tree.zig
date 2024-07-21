@@ -138,7 +138,7 @@ pub const HuffmanTreeNode = struct {
     pub fn decodeBytes(self: *HuffmanTreeNode, allocator: std.mem.Allocator, encoded_bytes: []const u8, num_decoded: u64) !std.ArrayList(u8) {
         var arr_out = std.ArrayList(u8).init(allocator);
         errdefer arr_out.deinit();
-        
+
         var iter = BitIterator.new(encoded_bytes);
 
         for (0..num_decoded) |_| {
@@ -158,6 +158,40 @@ pub const HuffmanTreeNode = struct {
             }
         }
         return curr_node.getByte();
+    }
+
+    /// Serializes this tree in a consise way. The length of the output ArrayList will be needed in the
+    /// tree's header to know when the output information starts.
+    ///
+    /// Each node is put into a "slot" which holds the node's information.
+    /// Each new slot is appended to the end; its "address" is its offset from the start of the list
+    ///
+    /// If a node is a leaf node, the slot consists of two u16s: {1, <byte-contained-as-u16>}
+    /// If a node is not a leaf node, the slot consists of three u16s: {0, <left-address>, <right-address>}
+    pub fn serialize(self: *HuffmanTreeNode, allocator: std.mem.Allocator) !std.ArrayList(u16) {
+        var arr_out = std.ArrayList(u16).init(allocator);
+        errdefer arr_out.deinit();
+        _ = try self.appendNode(&arr_out);
+        return arr_out;
+    }
+
+    fn appendNode(self: *HuffmanTreeNode, arr: *std.ArrayList(u16)) !u16 {
+
+        const address: u16 = @intCast(arr.items.len);
+
+        if (self.isLeafNode()) {
+            try arr.append(1);
+            try arr.append(@intCast(self.getByte()));
+        } else {
+            try arr.append(0);
+            try arr.append(0); // empty left
+            try arr.append(0); // empty right
+            const left_addr = try self.getLeft().?.appendNode(arr);
+            const right_addr = try self.getRight().?.appendNode(arr);
+            arr.items[address + 1] = left_addr;
+            arr.items[address + 2] = right_addr;
+        }
+        return address;
     }
 };
 

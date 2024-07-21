@@ -236,9 +236,7 @@ test "Test Decode Bytes" {
     const example_bytes = "A_DEAD_DAD_CEDED_A_BAD_BABE_A_BEADED_ABACA_BED";
     const array_in = huffman.countBytes(example_bytes);
     const tree = try huffman.tree.HuffmanTreeNode.initTreeFromByteCount(allocator, array_in);
-    const bits_in = [_]u8{ 0b10010011, 0b01000010, 0b01000011, 0b11011000, 0b11000011, 0b00111111,
-                            0b00001111, 0b11011111, 0b10011001, 0b11111101, 0b00011000, 0b01101111,
-                            0b10111010, 0b01111111, 0b00000000 };
+    const bits_in = [_]u8{ 0b10010011, 0b01000010, 0b01000011, 0b11011000, 0b11000011, 0b00111111, 0b00001111, 0b11011111, 0b10011001, 0b11111101, 0b00011000, 0b01101111, 0b10111010, 0b01111111, 0b00000000 };
     const bytes_out = try tree.decodeBytes(allocator, &bits_in, @intCast(example_bytes.len));
     defer {
         tree.deinit();
@@ -246,4 +244,44 @@ test "Test Decode Bytes" {
     }
 
     try std.testing.expectEqualSlices(u8, example_bytes, bytes_out.items);
+}
+
+test "Test Serialize Leaf Node" {
+    const node = try huffman.tree.HuffmanTreeNode.init(allocator, 'A', 12);
+    const actual = try node.serialize(allocator);
+    defer {
+        node.deinit();
+        actual.deinit();
+    }
+
+    try std.testing.expectEqual(1, actual.items[0]);
+    try std.testing.expectEqual('A', actual.items[1]);
+}
+
+test "Test Serialize Fork Node" {
+    var root = try huffman.tree.HuffmanTreeNode.init(allocator, 'X', 1);
+    root.setLeft(try huffman.tree.HuffmanTreeNode.init(allocator, 'L', 2));
+    root.setRight(try huffman.tree.HuffmanTreeNode.init(allocator, 'R', 3));
+    const ser = try root.serialize(allocator);
+    const expected = [_]u16{ 0, 3, 5, 1, 'L', 1, 'R' };
+    defer {
+        root.deinit();
+        ser.deinit();
+    }
+    try std.testing.expectEqualSlices(u16, &expected, ser.items);
+}
+
+test "Test Serialize Big Tree" {
+    const example_bytes = "A_DEAD_DAD_CEDED_A_BAD_BABE_A_BEADED_ABACA_BED";
+    const array_in = huffman.countBytes(example_bytes);
+    const tree = try huffman.tree.HuffmanTreeNode.initTreeFromByteCount(allocator, array_in);
+    const ser = try tree.serialize(allocator);
+    const expected = [_]u16{ 0, 3, 10, 0, 6, 8, 1, 'D', 1, '_', 0, 13, 15, 1, 'A', 0, 18, 20, 1, 'E', 0, 23, 25, 1, 'C', 1, 'B' };
+
+    defer {
+        tree.deinit();
+        ser.deinit();
+    }
+
+    try std.testing.expectEqualSlices(u16, &expected, ser.items);
 }
