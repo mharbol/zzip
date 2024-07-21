@@ -1,11 +1,7 @@
 const std = @import("std");
 const rle = @import("v0/rle/rle.zig");
-const util = @import("util/util.zig");
 
 pub fn main() !void {
-    std.debug.print("{any}\n", .{util.bytes.bigEndU16(0x10ff)});
-    std.debug.print("{any}\n", .{util.bytes.bigEndU32(0x10ff)});
-    std.debug.print("{any}\n", .{util.bytes.bigEndU64(0x10ff)});
 
     var arr = [_]u8{ 1, 2, 3 };
     for (&arr) |*val| {
