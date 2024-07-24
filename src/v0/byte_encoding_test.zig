@@ -1,7 +1,7 @@
 const std = @import("std");
-const allocator = std.testing.allocator;
-
 const encoder = @import("byte_encoding.zig");
+
+const allocator = std.testing.allocator;
 
 test "Test Serialize 1" {
     const enc = encoder.ByteEncoding.new('A', 0b100110110010, 12);
