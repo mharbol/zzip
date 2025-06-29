@@ -1,7 +1,8 @@
 .{
-    .name = "zzip",
+    .name = .zzip,
     .version = "0.0.1",
     .dependencies = .{},
+    .fingerprint = 0x989ad3b08307f0f9,
     .paths = .{
         "build.zig",
         "build.zig.zon",
